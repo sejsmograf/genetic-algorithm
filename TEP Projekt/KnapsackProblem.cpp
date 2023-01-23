@@ -1,7 +1,5 @@
-#include "KnapsackProblem.h"
-#include <stdexcept>
-#include <iostream>
 
+#include "KnapsackProblem.h"
 
 KnapsackProblem::KnapsackProblem(const std::vector<float>& weights, const std::vector<float>& values, int capacity)
 {
@@ -26,6 +24,37 @@ KnapsackProblem::KnapsackProblem(const std::vector<float>& weights, const std::v
 	itemsValues = values;
 }
 
+KnapsackProblem::KnapsackProblem(const std::string& filename)
+{
+	std::ifstream inputFile(filename);
+	
+	if (!inputFile.is_open()) {
+		throw std::invalid_argument("could open file: '" + filename + "'");
+	}
+
+	inputFile >> numItems >> knapsackCapacity;
+
+	if (numItems < 0 || knapsackCapacity < 0) {
+		throw std::invalid_argument("knapsack capacity and number of items cannot be negagive");
+	}
+
+	int itemIndex = 0;
+	float currentItemValue, currentItemWeight;
+
+	while (inputFile >> currentItemValue >> currentItemWeight) {
+		if (currentItemValue < 0 || currentItemWeight < 0) {
+			throw std::invalid_argument("weight and value must be non negative");
+		}
+		itemsValues.push_back(currentItemValue);
+		itemsWeights.push_back(currentItemWeight);
+		itemIndex++;
+	}
+
+	if (itemIndex != numItems) {
+		throw std::invalid_argument("specified number of items doesnt match real number of items");
+	}
+}
+
 float KnapsackProblem::evaluateGenotype(const std::vector<bool>& genotype) const
 {
 	//inicjujemy zmienne reprezentujace sume wag oraz wartossi wszystkich zabranych zmiennych
@@ -41,7 +70,7 @@ float KnapsackProblem::evaluateGenotype(const std::vector<bool>& genotype) const
 	}
 
 	//jesli przekroczylismy rozmiar plecaka to jakosc rozwizania to 0 (plecak pekl)
-	if (totalWeight > knapsackCapacity) { return 0; }
+	if (totalWeight > knapsackCapacity) { return knapsackCapacity - totalWeight; }
 
 	return totalValue;
 }

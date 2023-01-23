@@ -31,8 +31,6 @@ std::pair<Individual, Individual> Individual::crossover(const Individual& other,
 {
 	//losowowo wybrany punkt krzyzowania
 	int crossoverPoint = rng.generateInt(1, genotype.size() - 1);
-	std::cout << "KROSOWER POINT: " << crossoverPoint << ", ";
-
 	Individual child1(genotype.size(), rng, true);
 	Individual child2(genotype.size(), rng, true);
 
@@ -49,7 +47,6 @@ std::pair<Individual, Individual> Individual::crossover(const Individual& other,
 		child2.genotype[i] = genotype[i];
 	}
 
-	std::cout << "\n";
 	return std::pair<Individual, Individual>(child1, child2);
 }
 

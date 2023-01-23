@@ -132,6 +132,7 @@
     <ClInclude Include="Individual.h" />
     <ClInclude Include="KnapsackProblem.h" />
     <ClInclude Include="RandomNumberGenerator.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SelectionMethod.h" />
     <ClInclude Include="TournamentSelection.h" />
   </ItemGroup>
