@@ -21,16 +21,15 @@ public:
 
 	~Individual() = default;
 
+	float getFitness() const;
+
 	//ocenia przystosowanie osobnika dla danego problemu optymalizacyjnego i zwraca wynik
 	float evaluateGenotype(const BinaryOptimizationProblem& problem);
 
 	//przeprowadza krzyzowanie osobnika z drugim rodzicem i zwraca pare dzieci
 	std::pair<Individual, Individual> crossover(const Individual& other,RandomNumberGenerator& rng) const;
 
-	
-	
-	float getFitness() const;
-
+	//przeprowadza mutacje kazdego genu z szansa mutProb
 	void mutate(float mutProb, RandomNumberGenerator& rng);
 
 	void print() const;

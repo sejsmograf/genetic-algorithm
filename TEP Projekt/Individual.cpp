@@ -3,7 +3,7 @@
 
 
 Individual::Individual(int genotypeLength, RandomNumberGenerator& rng, bool isChild)
-	:fitness(-1) //fitness -1 oznacza ze jezscze nie ocenilismy przystosowania osobnika
+	:fitness()
 {
 	//zmienia rozmiar genotypu w celu szybszego zapelnienia, bez uzywania 'push_back'
 	genotype.resize(genotypeLength);

@@ -53,6 +53,8 @@ KnapsackProblem::KnapsackProblem(const std::string& filename)
 	if (itemIndex != numItems) {
 		throw std::invalid_argument("specified number of items doesnt match real number of items");
 	}
+
+	inputFile.close();
 }
 
 float KnapsackProblem::evaluateGenotype(const std::vector<bool>& genotype) const

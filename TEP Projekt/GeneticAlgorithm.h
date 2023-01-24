@@ -11,11 +11,13 @@ class GeneticAlgorithm
 public:
 	GeneticAlgorithm(int popSize, float crossProb, float mutProb);
 
+	void createInitialPopulation(std::vector<Individual>& initialPopulation, const BinaryOptimizationProblem& problem, RandomNumberGenerator& rng);
 
-	void run(const BinaryOptimizationProblem& problem, int numIterations, const SelectionMethod& selection);
+	void createNextPopulation(const std::vector<Individual>& currentPopulation, std::vector<Individual>& nextPopulation, const SelectionMethod& selection, const BinaryOptimizationProblem& problem, RandomNumberGenerator& rng);
 
+	void run(const BinaryOptimizationProblem& problem, int numIterations, const SelectionMethod& selection, bool printBestFromEveryPopulation = false);
 
-
+	
 
 private:
 	int populationSize;

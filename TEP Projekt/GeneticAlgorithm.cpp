@@ -17,77 +17,91 @@ GeneticAlgorithm::GeneticAlgorithm(int popSize, float crossProb, float mutProb)
 	mutationProb = mutProb;
 }
 
-void GeneticAlgorithm::run(const BinaryOptimizationProblem& problem, int numIterations,const SelectionMethod& selection)
+void GeneticAlgorithm::createInitialPopulation(std::vector<Individual>& initialPopulation, const BinaryOptimizationProblem& problem, RandomNumberGenerator& rng)
+{
+	initialPopulation.clear();
+	initialPopulation.reserve(populationSize);
+	
+	for (int i = 0; i < populationSize; i++) {
+		initialPopulation.push_back(Individual(problem.getSolutionLength(), rng));
+		initialPopulation[i].evaluateGenotype(problem);
+	}
+}
+
+
+
+
+
+
+
+
+void GeneticAlgorithm::createNextPopulation(const std::vector<Individual>& population, std::vector<Individual>& nextPopulation, const SelectionMethod& selection, const BinaryOptimizationProblem& problem, RandomNumberGenerator& rng)
+{
+	nextPopulation.clear();
+	nextPopulation.reserve(populationSize);
+
+
+	while (nextPopulation.size() != populationSize) {
+		const Individual& parent1 = population[selection.selectParent(population, rng)];
+		const Individual& parent2 = population[selection.selectParent(population, rng)];
+
+		if (rng.generateFloat(0, 1) < crossoverProb) {
+			//jesli krzyzowanie nastepuje to tworzymy dzieci, natepnie wstawiamy do nowej populacji
+			std::pair<Individual, Individual> children = parent1.crossover(parent2, rng);
+
+			nextPopulation.push_back(std::move(children.first));
+			nextPopulation.push_back(std::move(children.second));
+		}
+		else {
+
+			//w  przeciwnym wypadku do nowej populacji przechodza wybrani rodzice
+			nextPopulation.push_back(parent1);
+			nextPopulation.push_back(parent2);
+		}
+	}
+	for (int i = 0; i < populationSize; i++) {
+		nextPopulation[i].mutate(mutationProb, rng);
+		nextPopulation[i].evaluateGenotype(problem);
+	}
+}
+
+
+void GeneticAlgorithm::run(const BinaryOptimizationProblem& problem, int numIterations,const SelectionMethod& selection, bool printBestFromEveryPopulation)
 {
 	if (numIterations < 0) {
-		throw std::invalid_argument("number of iterations must be non negative");
+		throw std::invalid_argument("number of iterations cannot be negative");
 	}
 
 	//utworzenie pierwszej populacji
 	std::vector<Individual> population;
-	population.reserve(populationSize);
+	createInitialPopulation(population, problem, rng);
 
-	//zapelnienie losowymi osobnikami oraz ocena przystowosania
-	for (int i = 0; i < populationSize; i++) {
-		population.push_back(Individual(problem.getSolutionLength(), rng));
-		population[i].evaluateGenotype(problem);
-	}
 
-	std::vector<Individual> nextPopulation; //nastepna generacja populacji
-	nextPopulation.reserve(populationSize);
+	std::vector<Individual> nextPopulation;
+	
 
 	//glowna petla algorytmu, tworzy kolejne generacje populacji
 	for (int i = 0; i < numIterations; i++) {
-	
-		std::cout << "POPULACJA NR: " << i + 1;
 
-		int bestFitness = INT_MIN;
-		int bestIndex = 0;
-		for (int i = 0; i < populationSize; i++) {
-			if (population[i].getFitness() > bestFitness) {
-				bestFitness = population[i].getFitness();
-				bestIndex = i;
+		//wypisz najlepszego osobnika z populacji
+		if (printBestFromEveryPopulation) {
+			std::cout << "POPULACJA NR: " << i + 1;
+
+			int bestFitness = INT_MIN;
+			int bestIndex = 0;
+			for (int i = 0; i < populationSize; i++) {
+				if (population[i].getFitness() > bestFitness) {
+					bestFitness = population[i].getFitness();
+					bestIndex = i;
+				}
 			}
+			std::cout << ", Najlepszy:" << bestFitness << "\n";
 		}
-		std::cout<<", Najlepszy:" << bestFitness<<"\n";
-			
-		while (nextPopulation.size() != populationSize) {
 
+		createNextPopulation(population, nextPopulation, selection, problem, rng);
 
-
-			//referencje na osobniki wybrane metoda selekcji z populacji
-			const Individual& parent1 = population[selection.selectParent(population, rng)];
-			const Individual& parent2 = population[selection.selectParent(population, rng)];
-			
-			
-			//sprawdzenie czy nastepuje krzyzowanie
-			if (rng.generateFloat(0, 1) < crossoverProb) {
-				//jesli krzyzowanie nastepuje to tworzymy dzieci, natepnie wstawiamy do nowej populacji
-				std::pair<Individual, Individual> children = parent1.crossover(parent2,rng);
-
-				nextPopulation.push_back(std::move(children.first));
-				nextPopulation.push_back(std::move(children.second));
-			}
-			else {
-
-				//w  przeciwnym wypadku do nowej populacji przechodza wybrani rodzice
-				nextPopulation.push_back(parent1);
-				nextPopulation.push_back(parent2);
-			}
-
-		}
-		//przeprowadzenie mutacji nowej populacji, oraz ewaluacja przystosowania osobnikow
-		for (int i = 0; i < populationSize; i++) {
-			nextPopulation[i].mutate(mutationProb, rng);
-			nextPopulation[i].evaluateGenotype(problem);
-			/*nextPopulation[i].print();*/
-		}
 		std::swap(population, nextPopulation);
-		nextPopulation.clear();
-		nextPopulation.reserve(populationSize);
-
 	}
-
-	
-	
 }
+
+
