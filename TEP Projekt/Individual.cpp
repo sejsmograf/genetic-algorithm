@@ -19,10 +19,9 @@ Individual::Individual(int genotypeLength, RandomNumberGenerator& rng, bool isCh
 }
 
 
-float Individual::evaluateGenotype(const BinaryOptimizationProblem& problem)
+void Individual::evaluateGenotype(const BinaryOptimizationProblem& problem)
 {
 	fitness = problem.evaluateGenotype(genotype);
-	return fitness;
 }
 
 
@@ -31,6 +30,8 @@ std::pair<Individual, Individual> Individual::crossover(const Individual& other,
 {
 	//losowowo wybrany punkt krzyzowania
 	int crossoverPoint = rng.generateInt(1, genotype.size() - 1);
+
+	//utworzenie dwojki dzieci z domyslnymi (pustymi) genotypami
 	Individual child1(genotype.size(), rng, true);
 	Individual child2(genotype.size(), rng, true);
 
@@ -46,9 +47,11 @@ std::pair<Individual, Individual> Individual::crossover(const Individual& other,
 		child1.genotype[i] = other.genotype[i];
 		child2.genotype[i] = genotype[i];
 	}
-
+	
 	return std::pair<Individual, Individual>(child1, child2);
 }
+
+
 
 
 
@@ -58,8 +61,12 @@ float Individual::getFitness() const
 	return fitness;
 }
 
+
+
+
 void Individual::mutate(float mutProb, RandomNumberGenerator& rng)
 {
+	//iteracja po kazdym genie w genotypie, jesli wylosowana liczba jest mniejsza niz szansa krosowania, to odwracamy gen
 	for (int i = 0; i < genotype.size(); i++) {
 		if (rng.generateFloat(0, 1) < mutProb) {
 			genotype[i] = !(genotype[i]);

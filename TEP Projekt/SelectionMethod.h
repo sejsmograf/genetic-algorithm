@@ -8,5 +8,6 @@
 //interfejs reprezentujacy metode selekcji osobnika z populacji
 class SelectionMethod {
 public:
-	virtual int selectParent(const std::vector<Individual>& population,RandomNumberGenerator& rng) const = 0;
+	//zwraca stala referencje na rodzica
+	virtual const Individual& selectParent(const std::vector<Individual>& population,RandomNumberGenerator& rng) const = 0;
 };

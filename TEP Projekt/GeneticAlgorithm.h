@@ -29,10 +29,15 @@ public:
 	//glowna metoda algorytmu, przeprowadza symulacje mechanizmu ewolucji, tworzac kolejne generacje populacji,
 	void run(const BinaryOptimizationProblem& problem, int numIterations, const SelectionMethod& selection, bool printBestFromEveryPopulation = false);
 
+	const Individual& getBestIndividualFromPopulation(const std::vector<Individual>& population) const;
+
+	Individual getBestSolutionFromLastRun() const;
+
 private:
 	int populationSize; //rozmiar populacji
 	float crossoverProbability; //szansa krzyzowania wybranych osobnikow
 	float mutationProbability; //szansa mutacji kazdego genu kazdego osobnika
+	Individual bestSolutionFromLastRun;
 	RandomNumberGenerator rng; //instancja klasy enkapsulujacej generator liczb losowych, przekazywana jest dla innych klas, w celu unikniecia kopii
 };
 

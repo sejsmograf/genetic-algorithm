@@ -3,7 +3,8 @@
 #include "GeneticAlgorithm.h"
 
 GeneticAlgorithm::GeneticAlgorithm(int popSize, float crossProb, float mutProb)
-	:rng()
+	:rng(),
+	bestSolutionFromLastRun(0,rng,true)
 {
 	if (popSize <= 0) {
 		throw std::invalid_argument("population size must be greater than 0");
@@ -20,8 +21,7 @@ GeneticAlgorithm::GeneticAlgorithm(int popSize, float crossProb, float mutProb)
 //tworzy pierwsza populacjie losowych osobnikow
 void GeneticAlgorithm::createInitialPopulation(std::vector<Individual>& initialPopulation, const BinaryOptimizationProblem& problem, RandomNumberGenerator& rng)
 {
-	//czysci wektor populacji, nastepnie rezerwuje miejsce
-	initialPopulation.clear();
+	//rezerwuje miejsce w wektorze
 	initialPopulation.reserve(populationSize);
 	
 	//dodaje osobniki do populacji
@@ -41,13 +41,13 @@ void GeneticAlgorithm::createNextPopulation(const std::vector<Individual>& popul
 
 
 	if (populationSize % 2 == 1) {
-		nextPopulation.push_back(population[selection.selectParent(population, rng)]);
+		nextPopulation.push_back(selection.selectParent(population, rng));
 	}//jesli rozmiar populacji jest nieparzysty, 
 
 
 	while (nextPopulation.size() != populationSize) {
-		const Individual& parent1 = population[selection.selectParent(population, rng)];
-		const Individual& parent2 = population[selection.selectParent(population, rng)];
+		const Individual& parent1 = selection.selectParent(population, rng);
+		const Individual& parent2 = selection.selectParent(population, rng);
 
 		if (rng.generateFloat(0, 1) < crossoverProbability) {
 			//jesli krzyzowanie nastepuje to tworzymy dzieci, natepnie wstawiamy do nowej populacji
@@ -74,38 +74,60 @@ void GeneticAlgorithm::run(const BinaryOptimizationProblem& problem, int numIter
 {
 	if (numIterations < 0) {
 		throw std::invalid_argument("number of iterations cannot be negative");
-	}
+	}//ujemna liczba iteracji
 
 	//utworzenie pierwszej populacji
 	std::vector<Individual> population;
 	createInitialPopulation(population, problem, rng);
-
-
+	
+	//utworzenie nowej populacji
 	std::vector<Individual> nextPopulation;
 	
+	//najlepsze znalezione rozwiazanie
+	Individual bestSolution = getBestIndividualFromPopulation(population);
 
 	//glowna petla algorytmu, tworzy kolejne generacje populacji
 	for (int i = 0; i < numIterations; i++) {
 
-		//wypisz najlepszego osobnika z populacji
-		if (printBestFromEveryPopulation) {
-			std::cout << "POPULACJA NR: " << i + 1;
-
-			int bestFitness = INT_MIN;
-			int bestIndex = 0;
-			for (int i = 0; i < populationSize; i++) {
-				if (population[i].getFitness() > bestFitness) {
-					bestFitness = population[i].getFitness();
-					bestIndex = i;
-				}
-			}
-			std::cout << ", Najlepszy:" << bestFitness << "\n";
-		}
-
 		createNextPopulation(population, nextPopulation, selection, problem, rng);
 
 		std::swap(population, nextPopulation);
+
+		const Individual& bestFromPopulation = getBestIndividualFromPopulation(population);
+		if (bestFromPopulation.getFitness() > bestSolution.getFitness()) {
+			bestSolution = bestFromPopulation;
+		}
+
+		//wypisuje najlepszego z populacji, jesli tak podano w parametrach
+		if (printBestFromEveryPopulation) {
+			std::cout << "NAJLEPSZY Z POPULACJI " << i + 1 << " ma przystosowanie: " << bestFromPopulation.getFitness()<<"\n";
+		}
+
 	}
+	bestSolutionFromLastRun = bestSolution;
+	std::cout << "\nNAJLEPSZE ZNALEZIONE ROZWIAZANIE TO: " << bestSolution.getFitness();	
+}
+
+const Individual& GeneticAlgorithm::getBestIndividualFromPopulation(const std::vector<Individual>& population) const
+{
+	int bestIndex = 0; //na razie najlepszy to pierwszy
+	float bestFitness = population[0].getFitness(); 
+
+	float currentFitness;
+	for (int i = 0; i < populationSize; i++) {
+		currentFitness = population[i].getFitness();
+		
+		if (currentFitness > bestFitness) {
+			bestFitness = currentFitness;
+			bestIndex = i;
+		}
+	}
+	return population[bestIndex];
+}
+
+Individual GeneticAlgorithm::getBestSolutionFromLastRun() const
+{
+	return bestSolutionFromLastRun;
 }
 
 

@@ -16,6 +16,12 @@ public:
     KnapsackProblem(const std::vector<float>& weights, const std::vector<float>& values, int capacity);
     KnapsackProblem(const std::string& filename);
 
+    //domyslne, generowane przez kompilator
+    KnapsackProblem(const KnapsackProblem& other) = default;
+    KnapsackProblem(KnapsackProblem&& other) = default;
+    KnapsackProblem& operator=(const KnapsackProblem& other) = default;
+    KnapsackProblem& operator=(KnapsackProblem&& other) = default;
+    ~KnapsackProblem() = default;
 
 
     //Dziedziczone z BinaryOptimizationProblem
@@ -23,10 +29,10 @@ public:
     virtual int getSolutionLength() const override;
 
 private:
-    int numItems;
-    int knapsackCapacity;
-    std::vector<float> itemsValues;
-    std::vector<float> itemsWeights;
+    int numItems; //liczba dostepnych przedmiotow
+    int knapsackCapacity; //maksymalna pojemnosc plecaka
+    std::vector<float> itemsValues; //wartosci pooszczegolnych przedmiotow
+    std::vector<float> itemsWeights; //wagi poszczegolnych przedmiotowo
 
 };
 

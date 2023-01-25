@@ -12,30 +12,28 @@
 int main() {
 	
 	auto start = std::chrono::steady_clock::now();
+	std::string shortFilePrefix = ".\\knapsack_test_cases\\low-dimensional";
+	std::string longFilePrefix = ".\\knapsack_test_cases\\large_scale";
+	std::string filename = "knapPI_1_500_1000_1";
+
+	std::vector<float> values = { 44,46,90,72,91,40,75,35,8,54,78,40,77,15,61,17,75,29,75,63 };
+	std::vector<float> weights = { 92,4,43,83,84,68,92,82,6,44,32,18,56,83,25,96,70,48,14,58 };
+
 	try {
-		std::string shortFilePrefix = ".\\knapsack_test_cases\\low-dimensional";
-		std::string longFilePrefix = ".\\knapsack_test_cases\\large_scale";
-		std::string fileName = "knapPI_1_500_1000_1";
+		GeneticAlgorithm ga(50, 0.6, 0.003);
+		TournamentSelection selection(8);
+		KnapsackProblem longFileCase(longFilePrefix + "\\" + filename);
 
+		KnapsackProblem shortFileCase(shortFilePrefix + "\\2");
+		KnapsackProblem shortVectorCase(weights, values, 878);
 		
-		RandomNumberGenerator rng;
-		TournamentSelection selection(10);
-		KnapsackProblem a(longFilePrefix + "\\" + fileName);
-
-
-
-
-
-		GeneticAlgorithm ga(200, 0.7, 0.003);
-		ga.run(a, 2000, selection,true);
-		std::ifstream optimumInput(longFilePrefix + "-optimum\\" + fileName);
-
-		int opt;
-		optimumInput >> opt;
-		std::cout << "\n" << a.getSolutionLength()<< "\n" << opt;
+		
+		ga.run(longFileCase, 1000, selection,true);
+		
+		
 	}
 	catch (const std::invalid_argument error) {
-		std::cout << error.what();
+		std::cout << "Invalid argument error occured: " << error.what();
 	}
 
 	
