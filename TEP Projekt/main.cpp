@@ -15,12 +15,12 @@ int main() {
 	try {
 		std::string shortFilePrefix = ".\\knapsack_test_cases\\low-dimensional";
 		std::string longFilePrefix = ".\\knapsack_test_cases\\large_scale";
-		std::string fileName = "7";
+		std::string fileName = "knapPI_1_500_1000_1";
 
 		
 		RandomNumberGenerator rng;
-		TournamentSelection selection;
-		KnapsackProblem a(shortFilePrefix + "\\" + fileName);
+		TournamentSelection selection(10);
+		KnapsackProblem a(longFilePrefix + "\\" + fileName);
 
 
 
@@ -32,9 +32,9 @@ int main() {
 
 
 
-		GeneticAlgorithm ga(10, 0.7, 0.05);
-		ga.run(a, 100, selection,true);
-		std::ifstream optimumInput(shortFilePrefix + "-optimum\\" + fileName);
+		GeneticAlgorithm ga(200, 0.7, 0.003);
+		ga.run(a, 2000, selection,true);
+		std::ifstream optimumInput(longFilePrefix + "-optimum\\" + fileName);
 
 		int opt;
 		optimumInput >> opt;

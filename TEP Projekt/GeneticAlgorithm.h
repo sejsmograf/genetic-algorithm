@@ -9,7 +9,16 @@
 class GeneticAlgorithm
 {
 public:
+
 	GeneticAlgorithm(int popSize, float crossProb, float mutProb);
+
+	//domyslne, generowane przez kompilator 
+	GeneticAlgorithm(const GeneticAlgorithm& other) = default;
+	GeneticAlgorithm(GeneticAlgorithm&& other) = default;
+	GeneticAlgorithm& operator=(const GeneticAlgorithm& other) = default;
+	GeneticAlgorithm& operator=(GeneticAlgorithm&& other) = default;
+	~GeneticAlgorithm() = default;
+
 
 	void createInitialPopulation(std::vector<Individual>& initialPopulation, const BinaryOptimizationProblem& problem, RandomNumberGenerator& rng);
 
@@ -19,8 +28,8 @@ public:
 
 private:
 	int populationSize;
-	float crossoverProb;
-	float mutationProb;
+	float crossoverProbability;
+	float mutationProbability;
 	RandomNumberGenerator rng;
 };
 

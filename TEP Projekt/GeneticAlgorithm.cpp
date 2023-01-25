@@ -13,8 +13,8 @@ GeneticAlgorithm::GeneticAlgorithm(int popSize, float crossProb, float mutProb)
 	}
 
 	populationSize = popSize;
-	crossoverProb = crossProb;
-	mutationProb = mutProb;
+	crossoverProbability = crossProb;
+	mutationProbability = mutProb;
 }
 
 
@@ -41,7 +41,7 @@ void GeneticAlgorithm::createNextPopulation(const std::vector<Individual>& popul
 		const Individual& parent1 = population[selection.selectParent(population, rng)];
 		const Individual& parent2 = population[selection.selectParent(population, rng)];
 
-		if (rng.generateFloat(0, 1) < crossoverProb) {
+		if (rng.generateFloat(0, 1) < crossoverProbability) {
 			//jesli krzyzowanie nastepuje to tworzymy dzieci, natepnie wstawiamy do nowej populacji
 			std::pair<Individual, Individual> children = parent1.crossover(parent2, rng);
 
@@ -56,7 +56,7 @@ void GeneticAlgorithm::createNextPopulation(const std::vector<Individual>& popul
 		}
 	}
 	for (int i = 0; i < populationSize; i++) {
-		nextPopulation[i].mutate(mutationProb, rng);
+		nextPopulation[i].mutate(mutationProbability, rng);
 		nextPopulation[i].evaluateGenotype(problem);
 	}
 }
