@@ -51,7 +51,7 @@ KnapsackProblem::KnapsackProblem(const std::string& filename)
 	}
 
 	if (itemIndex != numItems) {
-		throw std::invalid_argument("specified number of items doesnt match real number of items");
+		throw std::invalid_argument("something went wrong (specified number of items doesnt match the real number / non numeric value encountered)");
 	}
 
 	inputFile.close();
@@ -71,8 +71,9 @@ float KnapsackProblem::evaluateGenotype(const std::vector<bool>& genotype) const
 		}
 	}
 
-	//jesli przekroczylismy rozmiar plecaka to jakosc rozwizania to 0 (plecak pekl)
+	//jesli przekroczylismy rozmiar plecaka to jakosc rozwizania jest ujemna i wynosci wage o jaka przekroczono rozmiar
 	if (totalWeight > knapsackCapacity) { return knapsackCapacity - totalWeight; }
+
 
 	return totalValue;
 }

@@ -17,8 +17,6 @@ public:
 
 	void run(const BinaryOptimizationProblem& problem, int numIterations, const SelectionMethod& selection, bool printBestFromEveryPopulation = false);
 
-	
-
 private:
 	int populationSize;
 	float crossoverProb;

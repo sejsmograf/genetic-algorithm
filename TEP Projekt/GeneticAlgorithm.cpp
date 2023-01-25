@@ -17,6 +17,7 @@ GeneticAlgorithm::GeneticAlgorithm(int popSize, float crossProb, float mutProb)
 	mutationProb = mutProb;
 }
 
+
 void GeneticAlgorithm::createInitialPopulation(std::vector<Individual>& initialPopulation, const BinaryOptimizationProblem& problem, RandomNumberGenerator& rng)
 {
 	initialPopulation.clear();
@@ -27,11 +28,6 @@ void GeneticAlgorithm::createInitialPopulation(std::vector<Individual>& initialP
 		initialPopulation[i].evaluateGenotype(problem);
 	}
 }
-
-
-
-
-
 
 
 

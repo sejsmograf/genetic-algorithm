@@ -15,12 +15,12 @@ int main() {
 	try {
 		std::string shortFilePrefix = ".\\knapsack_test_cases\\low-dimensional";
 		std::string longFilePrefix = ".\\knapsack_test_cases\\large_scale";
-		std::string fileName = "knapPI_1_500_1000_1";
+		std::string fileName = "7";
 
 		
 		RandomNumberGenerator rng;
-		TournamentSelection selection(6);
-		KnapsackProblem a(longFilePrefix + "\\" + fileName);
+		TournamentSelection selection;
+		KnapsackProblem a(shortFilePrefix + "\\" + fileName);
 
 
 
@@ -32,13 +32,13 @@ int main() {
 
 
 
-		GeneticAlgorithm ga(200, 0.7, 0.003);
-		ga.run(a, 2000, selection,true);
-		std::ifstream optimumInput(longFilePrefix + "-optimum\\" + fileName);
+		GeneticAlgorithm ga(10, 0.7, 0.05);
+		ga.run(a, 100, selection,true);
+		std::ifstream optimumInput(shortFilePrefix + "-optimum\\" + fileName);
 
 		int opt;
 		optimumInput >> opt;
-		std::cout << "\n" << opt;
+		std::cout << "\n" << a.getSolutionLength()<< "\n" << opt;
 	}
 	catch (const std::invalid_argument error) {
 		std::cout << error.what();
