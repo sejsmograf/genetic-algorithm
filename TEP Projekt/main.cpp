@@ -24,12 +24,6 @@ int main() {
 
 
 
-		
-
-
-
-
-
 
 
 		GeneticAlgorithm ga(200, 0.7, 0.003);

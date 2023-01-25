@@ -7,34 +7,42 @@ GeneticAlgorithm::GeneticAlgorithm(int popSize, float crossProb, float mutProb)
 {
 	if (popSize <= 0) {
 		throw std::invalid_argument("population size must be greater than 0");
-	}
+	}//niedodatni rozmiar populacji
 	if (crossProb < 0 || crossProb > 1 || mutProb < 0 || mutProb > 1) {
 		throw std::invalid_argument("probabilities must be between 0 and 1");
-	}
+	}//prawdopodobienstwa nie nalezace do <0;1>
 
 	populationSize = popSize;
 	crossoverProbability = crossProb;
 	mutationProbability = mutProb;
 }
 
-
+//tworzy pierwsza populacjie losowych osobnikow
 void GeneticAlgorithm::createInitialPopulation(std::vector<Individual>& initialPopulation, const BinaryOptimizationProblem& problem, RandomNumberGenerator& rng)
 {
+	//czysci wektor populacji, nastepnie rezerwuje miejsce
 	initialPopulation.clear();
 	initialPopulation.reserve(populationSize);
 	
+	//dodaje osobniki do populacji
 	for (int i = 0; i < populationSize; i++) {
-		initialPopulation.push_back(Individual(problem.getSolutionLength(), rng));
-		initialPopulation[i].evaluateGenotype(problem);
+		initialPopulation.push_back(Individual(problem.getSolutionLength(), rng)); // Individual traktowany jako rvalue (konstruktor przenoszacy)
+		initialPopulation[i].evaluateGenotype(problem); //ewaluacja przystosowania wlasnie dodanego osobnika
 	}
 }
 
 
-
+//tworzy nastepna generacje osobnikow, bazujac na dotychczasowej populacji
 void GeneticAlgorithm::createNextPopulation(const std::vector<Individual>& population, std::vector<Individual>& nextPopulation, const SelectionMethod& selection, const BinaryOptimizationProblem& problem, RandomNumberGenerator& rng)
 {
+	//czysci wektor populacji, nastepnie rezerwuje miejsce
 	nextPopulation.clear();
 	nextPopulation.reserve(populationSize);
+
+
+	if (populationSize % 2 == 1) {
+		nextPopulation.push_back(population[selection.selectParent(population, rng)]);
+	}//jesli rozmiar populacji jest nieparzysty, 
 
 
 	while (nextPopulation.size() != populationSize) {
